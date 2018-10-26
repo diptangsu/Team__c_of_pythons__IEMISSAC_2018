@@ -35,7 +35,7 @@ It Includes:
 - Android Application
   - Language: Java
     - IDE: Android Studio
-- External APK’s
+- External APIs
   - [OpenAQ](https://openaq.org/#/?_k=dasb9d): Open-Source AQI feed 
 
 

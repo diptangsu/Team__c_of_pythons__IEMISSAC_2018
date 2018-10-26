@@ -20,16 +20,16 @@ With increasing level of air pollutions each day, people are becoming more prone
 
 ### Solution Abstract:
 We aim to create an app with the following features:  
-- The App detects the user’s location and notifies the user about pollution levels (AQI) near the geographical proximity of the User.
-- Users can also view the level of Pollutants (in micrograms per cubic meter) in his/her geographical proximity.
-- The App provides a map-based UI for the user to seek Information on Air Pollution of any place remotely through maps.
+- The App **detects the user’s location and notifies** the user about **pollution levels (AQI)** near the geographical proximity of the User.
+- Users can also **view** the **level of Pollutants** (in micrograms per cubic meter) in his/her geographical proximity.
+- The App provides a **map-based UI** for the user to seek Information on Air Pollution of any place **remotely** through maps.
 
-Our App “PolluteAware” also has some USP’s other than the generic solution the problem statement seeks to find.
+Our App **“PolluteAware”** also has some **USPs** other than the generic solution the problem statement seeks to find.
 It Includes:
-1. User History: Details about Geographical places the User has visited along with the pollution levels the User got exposed to.
-2. A Health Hazard warning Algorithm based on threshold values of pollutants the User got exposed to.
-3. A Speed dial / Emergency Tab that would contain contacts of nearest Doctors and Health clinics in case of pollution-related health emergency or checkup.
-4. Users will also get an additional feature to share their geographical area’s AQI and pollution level stats to Social media platforms (Facebook, Whatsapp, e.t.c..)
+1. **User History**: Details about Geographical places the User has visited along with the pollution levels the User got exposed to.
+2. A **Health Hazard warning Algorithm** based on threshold values of pollutants the User got exposed to.
+3. A **Speed dial/Emergency Tab** that would contain contacts of nearest Doctors and Health clinics in case of pollution-related health emergency or checkup.
+4. Users will also get an additional feature to **share their geographical area’s AQI** and pollution level stats to Social media platforms (Facebook, Whatsapp, e.t.c..)
 
 ### Technology Stack:
 - Android Application

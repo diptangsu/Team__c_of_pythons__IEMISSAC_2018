@@ -45,23 +45,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    SwipeRefreshLayout mSwipeRefreshLayout;
-    Spinner countrySpinner;
-    Spinner citySpinner;
-    Spinner areaSpinner;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Spinner countrySpinner;
+    private Spinner citySpinner;
+    private Spinner areaSpinner;
 
-    String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
-    String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
-    String URL_AREA = "https://api.openaq.org/v1/locations?";
-    String URL_MEASUREMENTS = "https://api.openaq.org/v1/measurements?";
+    private String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
+    private String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
+    private String URL_AREA = "https://api.openaq.org/v1/locations?";
+    private String URL_MEASUREMENTS = "https://api.openaq.org/v1/measurements?";
 
-    String citySelected, countrySelected;
+    private String citySelected, countrySelected, areaSelected;
     private final String TAG = "FilterFragment";
 
-    ArrayList<String> countryNames;
-    ArrayList<String> cityNames;
-    ArrayList<String> areaNames;
-    Map<String, String> countryCodes;
+    private ArrayList<String> countryNames;
+    private ArrayList<String> cityNames;
+    private ArrayList<String> areaNames;
+    private Map<String, String> countryCodes;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,11 +84,17 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         populateCountrySpinner(URL_COUNTRIES);
 
+        setItemSelectedListeners();
+
+        return view;
+    }
+
+    private void setItemSelectedListeners() {
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String country = countrySpinner.getItemAtPosition(countrySpinner.getSelectedItemPosition()).toString();
-                if(country.compareTo("--Select Country--") != 0) {
+                if (country.compareTo("--Select Country--") != 0) {
                     cityNames.clear();
                     areaNames.clear();
 
@@ -112,11 +118,10 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String city = citySpinner.getItemAtPosition(citySpinner.getSelectedItemPosition()).toString();
-                if(city.compareTo("--Select City--") != 0) {
+                if (city.compareTo("--Select City--") != 0) {
                     areaNames.clear();
                     areaSpinner.clearFocus();
 
-                    Toast.makeText(getContext(), city, Toast.LENGTH_SHORT).show();
                     citySelected = city;
                     String url = URL_AREA + "country=" + countrySelected + "&city=" + city;
                     Log.e(TAG, url);
@@ -136,11 +141,13 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String area = citySpinner.getItemAtPosition(areaSpinner.getSelectedItemPosition()).toString();
-                if(area.compareTo("--Select Area--") != 0) {
+                String area = areaSpinner.getItemAtPosition(areaSpinner.getSelectedItemPosition()).toString();
+                if (area.compareTo("--Select Area--") != 0) {
+                    Toast.makeText(getContext(), area, Toast.LENGTH_SHORT).show();
+                    areaSelected = area;
 
+                    display();
                 } else {
-
                 }
             }
 
@@ -149,8 +156,12 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 // DO Nothing here
             }
         });
+    }
 
-        return view;
+    private void display() {
+        String url = URL_MEASUREMENTS + "country=" + countrySelected + "&city=" + citySelected + "&location=" + areaSelected;
+        Log.e(TAG, url);
+        Toast.makeText(getContext(), "display howa uchit", Toast.LENGTH_SHORT).show();
     }
 
     private void populateAreaSpinner(String url) {
@@ -167,7 +178,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         JSONObject jsonObjectI = jsonArray.getJSONObject(i);
                         if (jsonObjectI.has("location")) {
                             String location = jsonObjectI.getString("location");
-                            areaNames.add(location);
+                            areaNames.add(location.trim());
                         }
                     }
                     Collections.sort(areaNames);

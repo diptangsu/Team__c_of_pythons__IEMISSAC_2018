@@ -39,7 +39,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 if (isOnline()) {
 //                    if (hasProfile()) {
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
 //                    } else {

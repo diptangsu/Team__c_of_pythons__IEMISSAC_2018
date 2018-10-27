@@ -3,4 +3,6 @@
     <string name="sharedPref_file_name">geekPreferences</string>
     <string name="default_username">Username</string>
     <string name="default_email">Email</string>
+    <string name="facebook_app_id">2211904945747851</string>
+    <string name="fb_login_protocol_scheme">fb2211904945747851</string>
 </resources>

@@ -22,6 +22,8 @@ import com.example.deepd.pollutaware.R;
 import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -33,6 +35,8 @@ import butterknife.OnClick;
 public class LoginActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
+    LoginButton loginButton;
+    private static final String EMAIL = "email";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,37 +44,42 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-//        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        loginButton = findViewById(R.id.login_button);
         AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-                    }
 
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(LoginActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
-                    }
+        loginButton.setReadPermissions(Arrays.asList(EMAIL));
 
-                    @Override
-                    public void onError(FacebookException exception) {
-                        Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(LoginActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        Toast.makeText(this, "" + isLoggedIn, Toast.LENGTH_SHORT).show();
 
     }
 
-    @OnClick(R.id.login_button)
+    /*@OnClick(R.id.login_button)
     public void fbLogin()
     {
         LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("public_profile"));
-    }
+    }*/
 
     @OnClick(R.id.guestLogin)
     public void guestLogin()

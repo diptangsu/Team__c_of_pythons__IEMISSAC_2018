@@ -14,20 +14,54 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.deepd.pollutaware.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class MapsFragment extends Fragment {
-
+public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private View view;
+    private GoogleMap googleMap;
+
+    private MapView mapView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.layout_maps_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_maps, container, false);
 
         return view;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        MapsInitializer.initialize(view.getContext());
+        this.googleMap = googleMap;
+        this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        this.googleMap.addMarker(new MarkerOptions().position(new LatLng(40.689247, -74.044502)));
+
+        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.689247, -74.044502))
+                .zoom(16f).bearing(0).tilt(45).build();
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mapView = view.findViewById(R.id.map);
+        if (mapView != null) {
+            mapView.onCreate(null);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        }
     }
 }

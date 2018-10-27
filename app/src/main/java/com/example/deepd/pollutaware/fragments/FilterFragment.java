@@ -8,6 +8,7 @@
 
 package com.example.deepd.pollutaware.fragments;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.deepd.pollutaware.R;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,12 +70,15 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String citySelected, countrySelected, areaSelected;
     private final String TAG = "FilterFragment";
 
+    LineChart lineChart;
+
     private List<String> countryNames;
     private List<String> cityNames;
     private List<String> areaNames;
     private Map<String, String> countryCodes;
     private Map<String, String> parameters;
     private Map<String, ArrayList<Double>> pollutants;
+    private List<Integer> colors;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,19 +96,34 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         countryCodes = new HashMap<>();
         parameters = new HashMap<>();
         pollutants = new HashMap<>();
+        colors = new ArrayList<>();
 
         countrySpinner = view.findViewById(R.id.spinner_country);
         citySpinner = view.findViewById(R.id.spinner_city);
         areaSpinner = view.findViewById(R.id.spinner_area);
         data = view.findViewById(R.id.data);
+        lineChart = view.findViewById(R.id.lineChart);
+
 
         populateCountrySpinner(URL_COUNTRIES);
 
         setItemSelectedListeners();
         loadParameters();
         initializeParameters();
+        setColors();
 
         return view;
+    }
+
+    private void setColors() {
+        colors.add(Color.RED);
+        colors.add(Color.GREEN);
+        colors.add(Color.BLUE);
+        colors.add(Color.CYAN);
+        colors.add(Color.BLACK);
+        colors.add(Color.MAGENTA);
+        colors.add(Color.YELLOW);
+        colors.add(Color.LTGRAY);
     }
 
     private void loadParameters() {
@@ -236,15 +260,32 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     }
 
                     StringBuilder sb = new StringBuilder();
+                    List<ILineDataSet> dataSets = new ArrayList<>();
+                    int i = 0;
                     for (String pollutant : pollutants.keySet()) {
                         ArrayList<Double> values = pollutants.get(pollutant);
+                        List<Entry> entries = new ArrayList<>();
+
                         if (values != null) {
+                            int k = 0;
                             for (Double value : values) {
+                                entries.add(new Entry(new Float(value), k++));
                                 sb.append(value);
                             }
                         }
+                        LineDataSet pollutantSet = new LineDataSet(entries, pollutant);
+                        pollutantSet.setColor(colors.get(i));
+                        pollutantSet.setCircleColor(colors.get(i++));
+
+                        dataSets.add(pollutantSet);
                     }
                     data.setText(sb);
+                    lineChart.animateX(3000);
+                    lineChart.setData(new LineData(dataSets));
+                    lineChart.invalidate();
+//                    ArrayList<LineDataSet> lines = new ArrayList<LineDataSet> ();
+//                    String[] xAxis = new String[] {"1", "2", "3", "4", "5","6"};
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();

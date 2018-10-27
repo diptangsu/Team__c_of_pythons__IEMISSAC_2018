@@ -15,7 +15,7 @@
     tools:context=".activities.LoginActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/guestLogin"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -37,8 +37,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="fbLogin"
+        android:layout_marginBottom="96dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

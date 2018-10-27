@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">PollutAware</string>
+    <string name="sharedPref_file_name">geekPreferences</string>
+    <string name="default_username">Username</string>
+    <string name="default_email">Email</string>
 </resources>

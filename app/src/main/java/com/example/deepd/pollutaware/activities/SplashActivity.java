@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.deepd.pollutaware.LoginActivity;
 import com.example.deepd.pollutaware.Managers.ConstantManagers;
 import com.example.deepd.pollutaware.R;
 
@@ -39,7 +40,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 if (isOnline()) {
 //                    if (hasProfile()) {
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
 //                    } else {

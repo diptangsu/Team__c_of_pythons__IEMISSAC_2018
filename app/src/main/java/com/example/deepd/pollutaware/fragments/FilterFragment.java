@@ -8,6 +8,7 @@
 
 package com.example.deepd.pollutaware.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -104,7 +106,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     String code = countryCodes.get(country);
                     countrySelected = code;
 
-                    populateCitySpinner(URL_CITIES + code);
+                    populateCitySpinner(URLify(URL_CITIES + code));
                 }
             }
 
@@ -126,7 +128,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     String url = URL_AREA + "country=" + countrySelected + "&city=" + city;
                     Log.e(TAG, url);
 
-                    populateAreaSpinner(url);
+                    populateAreaSpinner(URLify(url));
                 } else {
 
                 }
@@ -160,8 +162,13 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void display() {
         String url = URL_MEASUREMENTS + "country=" + countrySelected + "&city=" + citySelected + "&location=" + areaSelected;
+        url = URLify(url);
         Log.e(TAG, url);
         Toast.makeText(getContext(), "display howa uchit", Toast.LENGTH_SHORT).show();
+    }
+
+    private String URLify(String url) {
+        return url.replace(" ", "%20");
     }
 
     private void populateAreaSpinner(String url) {

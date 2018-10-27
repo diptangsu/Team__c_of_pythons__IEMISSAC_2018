@@ -19,12 +19,16 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.example.deepd.pollutaware.R;
+import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import java.util.Arrays;
 import java.util.Collections;
 
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -34,9 +38,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
 
 //        FacebookSdk.sdkInitialize(getApplicationContext());
-//        AppEventsLogger.activateApp(this);
+        AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -61,10 +66,17 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void fbLogin(View view) {
-        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
-//        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
-//        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("public_profile"));
+    @OnClick(R.id.login_button)
+    public void fbLogin()
+    {
+        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("public_profile"));
+    }
+
+    @OnClick(R.id.guestLogin)
+    public void guestLogin()
+    {
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(i);
     }
 
     @Override

@@ -10,6 +10,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -18,4 +19,18 @@
         android:layout_height="wrap_content">
 
     </androidx.appcompat.widget.Toolbar>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/mainActivityViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp">
+
+        <androidx.viewpager.widget.PagerTitleStrip
+            android:id="@+id/mainActivityPagerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </androidx.viewpager.widget.PagerTitleStrip>
+    </androidx.viewpager.widget.ViewPager>
 </LinearLayout>

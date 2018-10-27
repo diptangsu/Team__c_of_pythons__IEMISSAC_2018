@@ -6,9 +6,11 @@
  * P.S.: In case you are planning to use this without mentioning me, you will be met with mean judgemental looks and sarcastic comments.
  */
 
-package com.example.deepd.pollutaware;
+package com.example.deepd.pollutaware.activities;
 
 import android.os.Bundle;
+
+import com.example.deepd.pollutaware.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +20,5 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-
     }
 }

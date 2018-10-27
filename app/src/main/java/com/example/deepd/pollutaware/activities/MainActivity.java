@@ -12,9 +12,11 @@ import android.os.Bundle;
 
 import com.example.deepd.pollutaware.R;
 import com.example.deepd.pollutaware.Utilities.DrawerUtils;
+import com.example.deepd.pollutaware.adapters.MainActivityViewPagerAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -22,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.mainActivityToolbar)
     Toolbar toolbar;
+    @BindView(R.id.mainActivityViewPager)
+    ViewPager viewPager;
+
+    private MainActivityViewPagerAdapter mainActivityViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         DrawerUtils.getDrawer(this, toolbar);
+        mainActivityViewPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mainActivityViewPagerAdapter);
     }
 }

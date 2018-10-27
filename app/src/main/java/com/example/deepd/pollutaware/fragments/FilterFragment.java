@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -51,11 +52,13 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private Spinner countrySpinner;
     private Spinner citySpinner;
     private Spinner areaSpinner;
+    TextView data;
 
-    private String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
-    private String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
-    private String URL_AREA = "https://api.openaq.org/v1/locations?";
-    private String URL_MEASUREMENTS = "https://api.openaq.org/v1/measurements?";
+    private final String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
+    private final String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
+    private final String URL_AREA = "https://api.openaq.org/v1/locations?";
+    private final String URL_MEASUREMENTS = "https://api.openaq.org/v1/measurements?";
+    private final String URL_PARAMETERS = "https://api.openaq.org/v1/parameters";
 
     private String citySelected, countrySelected, areaSelected;
     private final String TAG = "FilterFragment";
@@ -64,6 +67,8 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private ArrayList<String> cityNames;
     private ArrayList<String> areaNames;
     private Map<String, String> countryCodes;
+    private Map<String, String> parameters;
+    private Map<String, ArrayList<Double>> pollutants;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,16 +84,62 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         cityNames = new ArrayList<>();
         areaNames = new ArrayList<>();
         countryCodes = new HashMap<>();
+        parameters = new HashMap<>();
+        pollutants = new HashMap<>();
 
         countrySpinner = view.findViewById(R.id.spinner_country);
         citySpinner = view.findViewById(R.id.spinner_city);
         areaSpinner = view.findViewById(R.id.spinner_area);
+        data = view.findViewById(R.id.data);
 
         populateCountrySpinner(URL_COUNTRIES);
 
         setItemSelectedListeners();
+        loadParameters();
+        initializeParameters();
 
         return view;
+    }
+
+    private void loadParameters() {
+        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_PARAMETERS, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObjectI = jsonArray.getJSONObject(i);
+                        String id = jsonObjectI.getString("id");
+                        String description = jsonObjectI.getString("description");
+
+                        parameters.put(id, description);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Could not get Parameters", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "error listener", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
+    }
+
+    private void initializeParameters() {
+        for (String parameter : parameters.keySet()) {
+            pollutants.put(parameter, new ArrayList<Double>());
+        }
     }
 
     private void setItemSelectedListeners() {
@@ -129,8 +180,6 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     Log.e(TAG, url);
 
                     populateAreaSpinner(URLify(url));
-                } else {
-
                 }
             }
 
@@ -148,8 +197,8 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     Toast.makeText(getContext(), area, Toast.LENGTH_SHORT).show();
                     areaSelected = area;
 
+                    initializeParameters();
                     display();
-                } else {
                 }
             }
 
@@ -164,7 +213,55 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         String url = URL_MEASUREMENTS + "country=" + countrySelected + "&city=" + citySelected + "&location=" + areaSelected;
         url = URLify(url);
         Log.e(TAG, url);
-        Toast.makeText(getContext(), "display howa uchit", Toast.LENGTH_SHORT).show();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObjectI = jsonArray.getJSONObject(i);
+                        String parameter, value, d;
+                        parameter = jsonObjectI.getString("parameter");
+                        value = jsonObjectI.getString("value");
+
+                        ArrayList<Double> al = pollutants.get(parameter);
+                        if (al != null)
+                            al.add(Double.parseDouble(value));
+
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+                    for (String pollutant : pollutants.keySet()) {
+                        ArrayList<Double> values = pollutants.get(pollutant);
+                        if (values != null) {
+                            for (Double value : values) {
+                                sb.append(value);
+                            }
+                        }
+                    }
+                    data.setText(sb);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Could not get Areas", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "error listener", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
     }
 
     private String URLify(String url) {

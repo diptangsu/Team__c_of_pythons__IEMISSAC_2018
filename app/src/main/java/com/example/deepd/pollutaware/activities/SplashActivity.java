@@ -9,9 +9,10 @@
 package com.example.deepd.pollutaware.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.example.deepd.pollutaware.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

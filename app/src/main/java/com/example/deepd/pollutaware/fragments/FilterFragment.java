@@ -32,6 +32,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,7 +43,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private View view;
     SwipeRefreshLayout mSwipeRefreshLayout;
     Spinner countrySpinner;
     Spinner citySpinner;
@@ -49,62 +51,69 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
     ArrayList<String> countryName;
     ArrayList<String> cityName;
-    //private OnFragmentInteractionListener mListener;
+    Map<String, String> countryCodes;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(getActivity(), "onCreate", Toast.LENGTH_SHORT).show();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_filter, container, false);
+        View view = inflater.inflate(R.layout.fragment_filter, container, false);
+
         countryName = new ArrayList<>();
         cityName = new ArrayList<>();
+        countryCodes = new HashMap<>();
+
         countrySpinner = view.findViewById(R.id.spinner_country);
         citySpinner = view.findViewById(R.id.spinner_city);
+
         populateCountrySpinner(URL_COUNTRIES);
+
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String country = countrySpinner.getItemAtPosition(countrySpinner.getSelectedItemPosition()).toString();
-                Toast.makeText(getActivity(), country, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), country, Toast.LENGTH_SHORT).show();
+                String code = countryCodes.get(country);
+                Toast.makeText(getContext(), code, Toast.LENGTH_SHORT).show();
+
+                populateCitySpinner(URL_CITIES + code);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 // DO Nothing here
             }
         });
-        Toast.makeText(getActivity(), "View Created", Toast.LENGTH_SHORT).show();
         return view;
     }
 
-    private void populateCountrySpinner(String url) {
-        Toast.makeText(getActivity(), "Shuru", Toast.LENGTH_SHORT).show();
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+    private void populateCitySpinner(String url) {
+        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                int count = 0;
                 try {
-                    countryName.add("--Select Country--");
+                    cityName.add("--Select City--");
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
+
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        if (jsonObject1.has("name")) {
-                            String country = jsonObject1.getString("name");
-                            countryName.add(country);
+                        JSONObject jsonObjectI = jsonArray.getJSONObject(i);
+                        if (jsonObjectI.has("city")) {
+                            String city = jsonObjectI.getString("city");
+                            cityName.add(city);
                         }
                     }
-                    Toast.makeText(getContext(), "peyechi json", Toast.LENGTH_SHORT).show();
-
-                    countrySpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, countryName));
+                    citySpinner.setAdapter(new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_dropdown_item,
+                            cityName));
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "error json a", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Could not get Cities", Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -119,16 +128,51 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         stringRequest.setRetryPolicy(policy);
         requestQueue.add(stringRequest);
-
-        Toast.makeText(getActivity(), "Shesh", Toast.LENGTH_SHORT).show();
     }
 
+    private void populateCountrySpinner(String url) {
+        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    countryName.add("--Select Country--");
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("results");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        if (jsonObject1.has("name")) {
+                            String country = jsonObject1.getString("name");
+                            String countryCode = jsonObject1.getString("code");
+                            countryCodes.put(country, countryCode);
+                            countryName.add(country);
+                        }
+                    }
+                    countrySpinner.setAdapter(new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_dropdown_item,
+                            countryName));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Could not get Countries", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "error listener", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
+    }
 
     @Override
     public void onRefresh() {
         populateCountrySpinner(URL_COUNTRIES);
         mSwipeRefreshLayout.setRefreshing(false);
-
     }
-
 }

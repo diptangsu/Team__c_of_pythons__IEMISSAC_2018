@@ -9,6 +9,7 @@
 package com.example.deepd.pollutaware.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -47,10 +49,18 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     Spinner countrySpinner;
     Spinner citySpinner;
     Spinner areaSpinner;
+
     String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
     String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
-    ArrayList<String> countryName;
-    ArrayList<String> cityName;
+    String URL_AREA = "https://api.openaq.org/v1/locations?";
+    String URL_MEASUREMENTS = "https://api.openaq.org/v1/measurements?";
+
+    String citySelected, countrySelected;
+    private final String TAG = "FilterFragment";
+
+    ArrayList<String> countryNames;
+    ArrayList<String> cityNames;
+    ArrayList<String> areaNames;
     Map<String, String> countryCodes;
 
     @Override
@@ -63,12 +73,14 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
 
-        countryName = new ArrayList<>();
-        cityName = new ArrayList<>();
+        countryNames = new ArrayList<>();
+        cityNames = new ArrayList<>();
+        areaNames = new ArrayList<>();
         countryCodes = new HashMap<>();
 
         countrySpinner = view.findViewById(R.id.spinner_country);
         citySpinner = view.findViewById(R.id.spinner_city);
+        areaSpinner = view.findViewById(R.id.spinner_area);
 
         populateCountrySpinner(URL_COUNTRIES);
 
@@ -76,11 +88,18 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String country = countrySpinner.getItemAtPosition(countrySpinner.getSelectedItemPosition()).toString();
-                Toast.makeText(getContext(), country, Toast.LENGTH_SHORT).show();
-                String code = countryCodes.get(country);
-                Toast.makeText(getContext(), code, Toast.LENGTH_SHORT).show();
+                if(country.compareTo("--Select Country--") != 0) {
+                    cityNames.clear();
+                    areaNames.clear();
 
-                populateCitySpinner(URL_CITIES + code);
+                    citySpinner.clearFocus();
+                    areaSpinner.clearFocus();
+
+                    String code = countryCodes.get(country);
+                    countrySelected = code;
+
+                    populateCitySpinner(URL_CITIES + code);
+                }
             }
 
             @Override
@@ -88,7 +107,90 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 // DO Nothing here
             }
         });
+
+        citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String city = citySpinner.getItemAtPosition(citySpinner.getSelectedItemPosition()).toString();
+                if(city.compareTo("--Select City--") != 0) {
+                    areaNames.clear();
+                    areaSpinner.clearFocus();
+
+                    Toast.makeText(getContext(), city, Toast.LENGTH_SHORT).show();
+                    citySelected = city;
+                    String url = URL_AREA + "country=" + countrySelected + "&city=" + city;
+                    Log.e(TAG, url);
+
+                    populateAreaSpinner(url);
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // DO Nothing here
+            }
+        });
+
+        areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String area = citySpinner.getItemAtPosition(areaSpinner.getSelectedItemPosition()).toString();
+                if(area.compareTo("--Select Area--") != 0) {
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // DO Nothing here
+            }
+        });
+
         return view;
+    }
+
+    private void populateAreaSpinner(String url) {
+        RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    areaNames.add("--Select Area--");
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObjectI = jsonArray.getJSONObject(i);
+                        if (jsonObjectI.has("location")) {
+                            String location = jsonObjectI.getString("location");
+                            areaNames.add(location);
+                        }
+                    }
+                    Collections.sort(areaNames);
+                    areaSpinner.setAdapter(new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_dropdown_item,
+                            areaNames));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Could not get Areas", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "error listener", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
     }
 
     private void populateCitySpinner(String url) {
@@ -97,7 +199,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onResponse(String response) {
                 try {
-                    cityName.add("--Select City--");
+                    cityNames.add("--Select City--");
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
 
@@ -105,12 +207,13 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         JSONObject jsonObjectI = jsonArray.getJSONObject(i);
                         if (jsonObjectI.has("city")) {
                             String city = jsonObjectI.getString("city");
-                            cityName.add(city);
+                            cityNames.add(city.trim());
                         }
                     }
+                    Collections.sort(cityNames);
                     citySpinner.setAdapter(new ArrayAdapter<>(getContext(),
                             android.R.layout.simple_spinner_dropdown_item,
-                            cityName));
+                            cityNames));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), "Could not get Cities", Toast.LENGTH_SHORT).show();
@@ -136,7 +239,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onResponse(String response) {
                 try {
-                    countryName.add("--Select Country--");
+                    countryNames.add("--Select Country--");
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -145,12 +248,12 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             String country = jsonObject1.getString("name");
                             String countryCode = jsonObject1.getString("code");
                             countryCodes.put(country, countryCode);
-                            countryName.add(country);
+                            countryNames.add(country.trim());
                         }
                     }
                     countrySpinner.setAdapter(new ArrayAdapter<>(getContext(),
                             android.R.layout.simple_spinner_dropdown_item,
-                            countryName));
+                            countryNames));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), "Could not get Countries", Toast.LENGTH_SHORT).show();

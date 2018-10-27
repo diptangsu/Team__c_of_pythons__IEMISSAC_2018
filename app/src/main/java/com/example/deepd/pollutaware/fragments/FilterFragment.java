@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -63,9 +64,9 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String citySelected, countrySelected, areaSelected;
     private final String TAG = "FilterFragment";
 
-    private ArrayList<String> countryNames;
-    private ArrayList<String> cityNames;
-    private ArrayList<String> areaNames;
+    private List<String> countryNames;
+    private List<String> cityNames;
+    private List<String> areaNames;
     private Map<String, String> countryCodes;
     private Map<String, String> parameters;
     private Map<String, ArrayList<Double>> pollutants;

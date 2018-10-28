@@ -21,4 +21,10 @@ public class ConstantManagers {
     public static final String SHARED_PREF_USERNAME = "username";
     public static final String SHARED_PREF_EMAIL = "email";
     public static final String SHARED_PREF_MOBILE = "mobile";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
+
+    public static String userName = "Guest User";
+    public static double latitude = 0.0;
+    public static double longitude = 0.0;
 }

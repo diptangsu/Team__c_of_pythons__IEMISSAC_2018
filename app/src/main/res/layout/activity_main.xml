@@ -26,11 +26,11 @@
         android:layout_height="match_parent"
         android:layout_marginTop="5dp">
 
-        <androidx.viewpager.widget.PagerTitleStrip
+        <androidx.viewpager.widget.PagerTabStrip
             android:id="@+id/mainActivityPagerTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        </androidx.viewpager.widget.PagerTitleStrip>
+        </androidx.viewpager.widget.PagerTabStrip>
     </androidx.viewpager.widget.ViewPager>
 </LinearLayout>

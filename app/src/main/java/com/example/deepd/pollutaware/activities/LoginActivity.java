@@ -10,87 +10,26 @@ package com.example.deepd.pollutaware.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.example.deepd.pollutaware.R;
-import com.facebook.login.Login;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 
-import java.util.Arrays;
-import java.util.Collections;
+import com.example.deepd.pollutaware.R;
 
 import androidx.appcompat.app.AppCompatActivity;
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
-
-    CallbackManager callbackManager;
-    LoginButton loginButton;
-    private static final String EMAIL = "email";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        loginButton = findViewById(R.id.login_button);
-        AppEventsLogger.activateApp(this);
-        callbackManager = CallbackManager.Factory.create();
-
-        loginButton.setReadPermissions(Arrays.asList(EMAIL));
-
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancel() {
-                Toast.makeText(LoginActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-
     }
-
-    /*@OnClick(R.id.login_button)
-    public void fbLogin()
-    {
-        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("public_profile"));
-    }*/
 
     @OnClick(R.id.guestLogin)
-    public void guestLogin()
-    {
+    public void guestLogin() {
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, "result", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

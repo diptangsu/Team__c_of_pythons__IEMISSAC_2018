@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.deepd.pollutaware.Managers.ConstantManagers;
 import com.example.deepd.pollutaware.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,9 +48,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         this.googleMap = googleMap;
         this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        this.googleMap.addMarker(new MarkerOptions().position(new LatLng(40.689247, -74.044502)));
+        this.googleMap.addMarker(new MarkerOptions().position(new LatLng(ConstantManagers.latitude, ConstantManagers.longitude)));
 
-        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.689247, -74.044502))
+        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(ConstantManagers.latitude, ConstantManagers.longitude))
                 .zoom(16f).bearing(0).tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
@@ -64,4 +65,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             mapView.getMapAsync(this);
         }
     }
+
+
 }

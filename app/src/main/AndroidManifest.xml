@@ -29,7 +29,7 @@
         <!--Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAGfsFp2UvjUMQPneV2WdZUmA4E0rL5OFg" />
+            android:value="@string/google_map_api_key" />
         <!--Maps-->
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
@@ -49,7 +49,5 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>

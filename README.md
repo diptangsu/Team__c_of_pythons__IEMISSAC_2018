@@ -36,7 +36,8 @@ It Includes:
   - Language: Java
     - IDE: Android Studio
 - External APIs
-  - [OpenAQ](https://openaq.org/#/?_k=dasb9d): Open-Source AQI feed 
+  - [OpenAQ](https://openaq.org/#/?_k=dasb9d): Open-Source AQI feed
+  - [Open AQ Platform API](https://docs.openaq.org/): An API for open air quality data. 
 
 
 ## Team c_of_pythons

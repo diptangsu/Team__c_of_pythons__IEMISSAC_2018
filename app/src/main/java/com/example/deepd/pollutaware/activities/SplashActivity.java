@@ -64,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    private static final String URL_LOCATIONS = "https://api.openaq.org/v1/locations";
+    private static final String URL_LOCATIONS = "https://api.openaq.org/v1/locations?country=IN";
 
     private Set<String> locations;
     private Set<String> storedLocations;

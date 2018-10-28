@@ -99,7 +99,6 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         data = view.findViewById(R.id.data);
         lineChart = view.findViewById(R.id.lineChart);
 
-
         populateCountrySpinner(URL_COUNTRIES);
 
         setItemSelectedListeners();

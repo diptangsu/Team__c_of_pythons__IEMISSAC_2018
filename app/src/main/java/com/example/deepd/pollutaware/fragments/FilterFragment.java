@@ -282,6 +282,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             lineChart.invalidate();
                         }
                     } else {
+                        lineChart.clear();
                         lineChart.invalidate();
                         Snackbar.make(view, "No data available", Snackbar.LENGTH_LONG)
                                 .setAction("close", new View.OnClickListener() {
@@ -306,6 +307,8 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                             }
                         }).show();
+                lineChart.clear();
+                lineChart.invalidate();
                 error.printStackTrace();
             }
         });

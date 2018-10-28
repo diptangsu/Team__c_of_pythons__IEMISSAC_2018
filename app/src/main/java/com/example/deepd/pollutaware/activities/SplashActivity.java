@@ -148,14 +148,16 @@ public class SplashActivity extends AppCompatActivity {
 
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject jsonObjectI = results.getJSONObject(i);
-                        if (jsonObjectI.has("coordinates")) {
+                        if (jsonObjectI.has("coordinates") && jsonObjectI.has("location")) {
                             JSONObject coordinates = jsonObjectI.getJSONObject("coordinates");
+                            String locationName = jsonObjectI.getString("location");
+                            locationName = locationName.replace(",", "");
                             String lat, lon;
                             if (coordinates.has("latitude") && coordinates.has("longitude")) {
                                 lat = coordinates.getString("latitude");
                                 lon = coordinates.getString("longitude");
-                                String location = lat + "," + lon;
-
+                                String location = lat + "," + lon + "," + locationName;
+                                Log.i("LOCATION", location);
                                 locations.add(location);
                             }
                         }

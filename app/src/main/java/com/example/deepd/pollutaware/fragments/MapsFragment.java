@@ -10,6 +10,8 @@ package com.example.deepd.pollutaware.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +31,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
@@ -72,10 +76,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 Double lat = Double.parseDouble(loc[0]), lon = Double.parseDouble(loc[1]);
                 Log.e("LATLON", "" + lat + " " + lon);
 
+                String dataString = "Aqi: " + (int) fetchAqi();
+                String locationString = loc[2];
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_pin);
                 this.googleMap.addMarker(new MarkerOptions().icon(icon).position(new LatLng(lat, lon))
-                        .title("PollutAware")
-                        .snippet("Population: 4.37")).showInfoWindow();
+                        .title(locationString)
+                        .snippet(dataString)).showInfoWindow();
             }
         }
     }
@@ -91,4 +97,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private double fetchAqi() {
+        double max = 450;
+        double min = 85;
+        return Math.round((Math.random() * ((max - min) + 1)) + min);
+    }
+
+    private String getAddress(double lat, double lng) {
+        String name = " ";
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            name = obj.getLocality();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("Location names", "Location: " + name);
+        return name;
+    }
 }

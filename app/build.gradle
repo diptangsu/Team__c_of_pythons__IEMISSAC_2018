@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
@@ -31,9 +31,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-
     //MaterialDrawer Mike Penz
-    implementation "com.mikepenz:materialdrawer:6.1.1"
+    implementation 'com.mikepenz:materialdrawer:6.1.1'
     //Volley
     implementation 'com.android.volley:volley:1.1.1'
     //ButterKnife
@@ -45,4 +44,8 @@ dependencies {
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
     //AutoTypeTextView
     implementation 'com.krsticdragan:autotypetextview:1.1'
+    //CardView
+    implementation 'androidx.cardview:cardview:1.0.0'
+    //CircleImageView
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }

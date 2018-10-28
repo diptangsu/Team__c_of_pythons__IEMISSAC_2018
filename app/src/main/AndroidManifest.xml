@@ -31,5 +31,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_key" />
         <!--Maps-->
+
+        <service
+            android:name=".services.NotificationService"
+            android:exported="false"/>
     </application>
 </manifest>

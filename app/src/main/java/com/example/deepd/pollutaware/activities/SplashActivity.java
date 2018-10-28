@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.dragankrstic.autotypetextview.AutoTypeTextView;
 import com.example.deepd.pollutaware.Managers.ConstantManagers;
 import com.example.deepd.pollutaware.R;
+import com.example.deepd.pollutaware.services.NotificationService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -75,6 +76,9 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         autoTypeTextView = findViewById(R.id.autoTypeTextView);
         autoTypeTextView.setTextAutoTyping(getResources().getString(R.string.app_name));
+
+        Intent i = new Intent(this, NotificationService.class);
+        startService(i);
     }
 
     @Override

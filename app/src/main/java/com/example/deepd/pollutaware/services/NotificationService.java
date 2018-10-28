@@ -3,6 +3,7 @@ package com.example.deepd.pollutaware.services;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class NotificationService extends IntentService {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_pin)
+                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.ic_logo))
                 .setContentTitle("PollutAware AQI Alert")
                 .setContentText("Click to view AQI levels near you, expand for details")
                 .setStyle(new NotificationCompat.BigTextStyle()

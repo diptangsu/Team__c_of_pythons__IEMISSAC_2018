@@ -9,7 +9,6 @@
 package com.example.deepd.pollutaware.fragments;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,27 +48,23 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private Spinner countrySpinner;
-    private Spinner citySpinner;
-    private Spinner areaSpinner;
-    private TextView data;
 
     private final String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
     private final String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
     private final String URL_AREA = "https://api.openaq.org/v1/locations?";
     private final String URL_MEASUREMENTS = "https://api.openaq.org/v1/measurements?";
     private final String URL_PARAMETERS = "https://api.openaq.org/v1/parameters";
-
-    private String citySelected, countrySelected, areaSelected;
     private final String TAG = "FilterFragment";
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Spinner countrySpinner;
+    private Spinner citySpinner;
+    private Spinner areaSpinner;
+    private TextView data;
+    private String citySelected, countrySelected, areaSelected;
     private LineChart lineChart;
 
     private List<String> countryNames;
@@ -262,6 +257,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     StringBuilder sb = new StringBuilder();
                     List<ILineDataSet> dataSets = new ArrayList<>();
                     int i = 0;
+                    LineDataSet pollutantSet;
                     for (String pollutant : pollutants.keySet()) {
                         ArrayList<Double> values = pollutants.get(pollutant);
                         List<Entry> entries = new ArrayList<>();
@@ -273,16 +269,21 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 sb.append(value);
                             }
                         }
-                        LineDataSet pollutantSet = new LineDataSet(entries, pollutant);
-                        pollutantSet.setColor(colors.get(i));
-                        pollutantSet.setCircleColor(colors.get(i++));
+                        if (entries.size() > 0) {
+                            pollutantSet = new LineDataSet(entries, pollutant);
+                            pollutantSet.setColor(colors.get(i));
+                            pollutantSet.setCircleColor(colors.get(i++));
 
-                        dataSets.add(pollutantSet);
+                            dataSets.add(pollutantSet);
+                        }
                     }
-                    data.setText(sb);
-                    lineChart.animateX(3000);
-                    lineChart.setData(new LineData(dataSets));
-                    lineChart.invalidate();
+                    if (dataSets.size() > 0) {
+                        data.setText(sb);
+                        lineChart.animateX(3000);
+                        lineChart.setData(new LineData(dataSets));
+                        lineChart.invalidate();
+                    }
+
 //                    ArrayList<LineDataSet> lines = new ArrayList<LineDataSet> ();
 //                    String[] xAxis = new String[] {"1", "2", "3", "4", "5","6"};
 

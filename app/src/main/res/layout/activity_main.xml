@@ -20,17 +20,18 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/mainActivityPagerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+    </com.astuetz.PagerSlidingTabStrip>
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/mainActivityViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp">
 
-        <androidx.viewpager.widget.PagerTabStrip
-            android:id="@+id/mainActivityPagerTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        </androidx.viewpager.widget.PagerTabStrip>
     </androidx.viewpager.widget.ViewPager>
 </LinearLayout>

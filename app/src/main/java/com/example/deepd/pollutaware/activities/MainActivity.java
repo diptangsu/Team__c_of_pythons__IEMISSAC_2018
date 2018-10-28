@@ -10,6 +10,7 @@ package com.example.deepd.pollutaware.activities;
 
 import android.os.Bundle;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.example.deepd.pollutaware.R;
 import com.example.deepd.pollutaware.Utilities.DrawerUtils;
 import com.example.deepd.pollutaware.adapters.MainActivityViewPagerAdapter;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.mainActivityViewPager)
     ViewPager viewPager;
+    @BindView(R.id.mainActivityPagerTitle)
+    PagerSlidingTabStrip pagerSlidingTabStrip;
 
     private MainActivityViewPagerAdapter mainActivityViewPagerAdapter;
 
@@ -41,5 +44,6 @@ public class MainActivity extends AppCompatActivity {
         DrawerUtils.getDrawer(this, toolbar);
         mainActivityViewPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mainActivityViewPagerAdapter);
+        pagerSlidingTabStrip.setViewPager(viewPager);
     }
 }

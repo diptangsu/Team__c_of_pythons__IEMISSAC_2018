@@ -43,4 +43,6 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:4.38.0'
     // MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //PagerSlidingTabStrip
+    implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }

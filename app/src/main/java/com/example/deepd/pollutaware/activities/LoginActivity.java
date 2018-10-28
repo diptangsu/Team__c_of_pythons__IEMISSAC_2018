@@ -10,6 +10,7 @@ package com.example.deepd.pollutaware.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.deepd.pollutaware.R;
 
@@ -31,5 +32,20 @@ public class LoginActivity extends AppCompatActivity {
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
         finish();
+    }
+
+    @OnClick(R.id.facebookLoginButton)
+    void facebookLogin() {
+        Toast.makeText(this, "Not Available currently", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.googleLoginButton)
+    void googleLogin() {
+        Toast.makeText(this, "Not Available currently", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.twitterLoginButton)
+    void twitterLogin() {
+        Toast.makeText(this, "Not Available currently", Toast.LENGTH_SHORT).show();
     }
 }

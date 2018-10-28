@@ -12,6 +12,6 @@
     <!--android:angle="270" />-->
     <corners android:radius="30dp" />
     <stroke
-        android:width="2px"
+        android:width="3dp"
         android:color="#80000000" />
 </shape>

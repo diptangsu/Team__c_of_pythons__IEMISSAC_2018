@@ -33,6 +33,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +52,8 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+
+    private View view;
 
     private final String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
     private final String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
@@ -81,7 +84,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_filter, container, false);
+        view = inflater.inflate(R.layout.fragment_filter, container, false);
 
         countryNames = new ArrayList<>();
         cityNames = new ArrayList<>();
@@ -210,7 +213,6 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String area = areaSpinner.getItemAtPosition(areaSpinner.getSelectedItemPosition()).toString();
                 if (area.compareTo("--Select Area--") != 0) {
-                    Toast.makeText(getContext(), area, Toast.LENGTH_SHORT).show();
                     areaSelected = area;
 
                     initializeParameters();
@@ -237,47 +239,57 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
+                    if(jsonArray.length() != 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObjectI = jsonArray.getJSONObject(i);
+                            String parameter, value;
+                            parameter = jsonObjectI.getString("parameter");
+                            value = jsonObjectI.getString("value");
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObjectI = jsonArray.getJSONObject(i);
-                        String parameter, value;
-                        parameter = jsonObjectI.getString("parameter");
-                        value = jsonObjectI.getString("value");
+                            ArrayList<Double> al = pollutants.get(parameter);
+                            if (al != null)
+                                al.add(Double.parseDouble(value));
 
-                        ArrayList<Double> al = pollutants.get(parameter);
-                        if (al != null)
-                            al.add(Double.parseDouble(value));
+                        }
 
-                    }
+                        StringBuilder sb = new StringBuilder();
+                        List<ILineDataSet> dataSets = new ArrayList<>();
+                        int i = 0;
+                        LineDataSet pollutantSet;
+                        for (String pollutant : pollutants.keySet()) {
+                            ArrayList<Double> values = pollutants.get(pollutant);
+                            List<Entry> entries = new ArrayList<>();
 
-                    StringBuilder sb = new StringBuilder();
-                    List<ILineDataSet> dataSets = new ArrayList<>();
-                    int i = 0;
-                    LineDataSet pollutantSet;
-                    for (String pollutant : pollutants.keySet()) {
-                        ArrayList<Double> values = pollutants.get(pollutant);
-                        List<Entry> entries = new ArrayList<>();
+                            if (values != null) {
+                                float k = 0f;
+                                for (Double value : values) {
+                                    double d = value;
+                                    entries.add(new Entry(k++, (int) d));
+                                    sb.append(value);
+                                }
+                            }
+                            if (entries.size() > 0) {
+                                pollutantSet = new LineDataSet(entries, pollutant);
+                                pollutantSet.setColor(colors.get(i));
+                                pollutantSet.setCircleColor(colors.get(i++));
 
-                        if (values != null) {
-                            float k = 0f;
-                            for (Double value : values) {
-                                double d = value;
-                                entries.add(new Entry(k++, (int)d));
-                                sb.append(value);
+                                dataSets.add(pollutantSet);
                             }
                         }
-                        if (entries.size() > 0) {
-                            pollutantSet = new LineDataSet(entries, pollutant);
-                            pollutantSet.setColor(colors.get(i));
-                            pollutantSet.setCircleColor(colors.get(i++));
-
-                            dataSets.add(pollutantSet);
+                        if (dataSets.size() > 0) {
+                            lineChart.animateX(3000);
+                            lineChart.setData(new LineData(dataSets));
+                            lineChart.invalidate();
                         }
-                    }
-                    if (dataSets.size() > 0) {
-                        lineChart.animateX(3000);
-                        lineChart.setData(new LineData(dataSets));
+                    } else {
                         lineChart.invalidate();
+                        Snackbar.make(view, "No data available", Snackbar.LENGTH_LONG)
+                                .setAction("close", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -287,7 +299,13 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "error listener", Toast.LENGTH_SHORT).show();
+                Snackbar.make(view, "No data available", Snackbar.LENGTH_LONG)
+                        .setAction("close", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        }).show();
                 error.printStackTrace();
             }
         });

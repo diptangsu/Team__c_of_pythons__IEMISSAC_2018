@@ -13,6 +13,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -22,6 +23,14 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.deepd.pollutaware.Managers.ConstantManagers;
 import com.example.deepd.pollutaware.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,11 +38,21 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import static java.security.AccessController.getContext;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -42,6 +61,14 @@ public class SplashActivity extends AppCompatActivity {
     private final String TAG = "SplashScreenActivity";
 
     private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private static final String URL_LOCATIONS = "https://api.openaq.org/v1/locations";
+    private static final String MY_PREFERENCES = "locations";
+
+    private Set<String> locations;
+    private Set<String> storedLocations;
+
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +84,62 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             requestLocationPermission();
         }
+
+        sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        locations = new HashSet<>();
+
+//        fetchAllLocations();
+        storedLocations = sharedPreferences.getStringSet(MY_PREFERENCES, null);
+        if(storedLocations == null)
+            fetchAllLocations();
+        else
+            Toast.makeText(this, "" + storedLocations.size(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void fetchAllLocations() {
+        RequestQueue requestQueue = Volley.newRequestQueue(SplashActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_LOCATIONS, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray results = jsonObject.getJSONArray("results");
+
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject jsonObjectI = results.getJSONObject(i);
+                        if(jsonObjectI.has("coordinates")) {
+                            JSONObject coordinates = jsonObjectI.getJSONObject("coordinates");
+                            String lat, lon;
+                            if (coordinates.has("latitude") && coordinates.has("longitude")) {
+                                lat = coordinates.getString("latitude");
+                                lon = coordinates.getString("longitude");
+                                String location = lat + "," + lon;
+
+                                locations.add(location);
+                            }
+                        }
+                    }
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putStringSet(MY_PREFERENCES, locations);
+                    editor.apply();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(SplashActivity.this, "Could not get Parameters", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(SplashActivity.this, "error listener", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
     }
 
     private void requestLocationPermission() {

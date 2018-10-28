@@ -262,9 +262,10 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         List<Entry> entries = new ArrayList<>();
 
                         if (values != null) {
-                            int k = 0;
+                            float k = 0f;
                             for (Double value : values) {
-                                entries.add(new Entry(new Float(value), k++));
+                                double d = value;
+                                entries.add(new Entry(k++, (int)d));
                                 sb.append(value);
                             }
                         }
@@ -282,11 +283,6 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         lineChart.setData(new LineData(dataSets));
                         lineChart.invalidate();
                     }
-
-//                    ArrayList<LineDataSet> lines = new ArrayList<LineDataSet> ();
-//                    String[] xAxis = new String[] {"1", "2", "3", "4", "5","6"};
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), "Could not get Areas", Toast.LENGTH_SHORT).show();

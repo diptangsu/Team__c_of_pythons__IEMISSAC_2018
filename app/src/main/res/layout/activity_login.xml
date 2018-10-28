@@ -60,27 +60,50 @@
         android:padding="8dp"
         android:text="@string/login_as_guest"
         android:textColor="#000000"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="272dp"
+    <View
+        android:id="@+id/view"
+        style="@style/Divider"
+        android:layout_width="100dp"
+        android:layout_height="2dp"
+        android:layout_margin="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/OR"
+        app:layout_constraintEnd_toStartOf="@+id/OR"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/OR" />
+
+    <TextView
+        android:id="@+id/OR"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Continue with Facebook"
-        android:drawableStart="@drawable/i"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:background="@drawable/bg_fblogin_button"
+        android:text="OR"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guestLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/guestLogin"
+        app:layout_constraintVertical_bias="0.103" />
 
+    <View
+        style="@style/Divider"
+        android:layout_width="100dp"
+        android:layout_height="2dp"
+        android:layout_margin="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/OR"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/OR"
+        app:layout_constraintTop_toTopOf="@+id/OR" />
 </androidx.constraintlayout.widget.ConstraintLayout>

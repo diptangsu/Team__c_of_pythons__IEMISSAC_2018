@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -63,7 +62,6 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private Spinner countrySpinner;
     private Spinner citySpinner;
     private Spinner areaSpinner;
-    private TextView data;
     private String citySelected, countrySelected, areaSelected;
     private LineChart lineChart;
 
@@ -96,7 +94,6 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         countrySpinner = view.findViewById(R.id.spinner_country);
         citySpinner = view.findViewById(R.id.spinner_city);
         areaSpinner = view.findViewById(R.id.spinner_area);
-        data = view.findViewById(R.id.data);
         lineChart = view.findViewById(R.id.lineChart);
 
         populateCountrySpinner(URL_COUNTRIES);
@@ -278,7 +275,6 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         }
                     }
                     if (dataSets.size() > 0) {
-                        data.setText(sb);
                         lineChart.animateX(3000);
                         lineChart.setData(new LineData(dataSets));
                         lineChart.invalidate();

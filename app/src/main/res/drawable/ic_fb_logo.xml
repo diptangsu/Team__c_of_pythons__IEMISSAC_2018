@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Created by Sujoy Datta. Copyright (c) 2018. All rights reserved.
+  ~
+  ~ To the person who is reading this..
+  ~ When you finally understand how this works, please do explain it to me too at sujoydatta26@gmail.com
+  ~ P.S.: In case you are planning to use this without mentioning me, you will be met with mean judgemental looks and sarcastic comments.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24.0"
+    android:viewportHeight="24.0">
+    <group
+        android:scaleX="0.1"
+        android:scaleY="-0.1"
+        android:translateY="512">
+        <path
+            android:fillColor="#000000"
+            android:pathData="M0 2560L0 0l2560 0 2560 0 0 2560 0 2560 -2560 0 -2560 0 0 -2560zm3660 1576l0 -324 -217 -4c-246 -4 -287 -13 -334 -79 -23 -33 -24 -41 -29 -269 -3 -129 -4 -238 -2 -242 2 -5 134 -8 294 -8l291 0 -6 -57c-7 -71 -33 -317 -50 -473l-12 -115 -258 -3 -257 -2 0 -950 0 -950 -355 0 -355 0 0 950 0 950 -235 2c-129 2 -235 6 -235 11 0 4 0 149 0 322l0 315 234 0 234 0 4 318c4 281 7 328 27 417 68 304 232 453 552 499 62 9 199 14 402 15l307 1 0 -324z" />
+    </group>
+</vector>

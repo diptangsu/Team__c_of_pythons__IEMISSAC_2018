@@ -8,6 +8,14 @@
 
 package com.example.deepd.pollutaware.adapters;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ImageSpan;
+
+import com.example.deepd.pollutaware.R;
 import com.example.deepd.pollutaware.fragments.FilterFragment;
 import com.example.deepd.pollutaware.fragments.InfoFragment;
 import com.example.deepd.pollutaware.fragments.MapsFragment;
@@ -18,8 +26,15 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 public class MainActivityViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    public MainActivityViewPagerAdapter(FragmentManager fm) {
+    Drawable drawable;
+    String title;
+
+    private Context context;
+    private String[] tab_names = {"Maps", "Filter", "Info"};
+
+    public MainActivityViewPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
+        this.context = context;
     }
 
     @Override
@@ -45,13 +60,27 @@ public class MainActivityViewPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Maps";
+                drawable = context.getResources().getDrawable(R.mipmap.ic_maps);
+                title = tab_names[position];
+                break;
             case 1:
-                return "Filter";
+                drawable = context.getResources().getDrawable(R.mipmap.ic_filter);
+                title = tab_names[position];
             case 2:
-                return "Info";
+                drawable = context.getResources().getDrawable(R.mipmap.ic_info);
+                title = tab_names[position];
+                break;
             default:
-                return null;
+                break;
         }
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(" " + title);
+        try {
+            drawable.setBounds(5, 5, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            ImageSpan imageSpan = new ImageSpan(drawable, DynamicDrawableSpan.ALIGN_BASELINE);
+            spannableStringBuilder.setSpan(imageSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spannableStringBuilder;
     }
 }

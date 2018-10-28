@@ -16,14 +16,15 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/mainActivityToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_background">
 
     </androidx.appcompat.widget.Toolbar>
 
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/mainActivityPagerTitle"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="48dp">
 
     </com.astuetz.PagerSlidingTabStrip>
 

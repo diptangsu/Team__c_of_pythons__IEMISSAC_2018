@@ -42,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         DrawerUtils.getDrawer(this, toolbar);
-        mainActivityViewPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
+        mainActivityViewPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager(), MainActivity.this);
         viewPager.setAdapter(mainActivityViewPagerAdapter);
+        pagerSlidingTabStrip.setShouldExpand(true);
         pagerSlidingTabStrip.setViewPager(viewPager);
     }
 }

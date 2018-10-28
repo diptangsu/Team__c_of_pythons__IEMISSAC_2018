@@ -59,7 +59,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private Spinner countrySpinner;
     private Spinner citySpinner;
     private Spinner areaSpinner;
-    TextView data;
+    private TextView data;
 
     private final String URL_COUNTRIES = "https://api.openaq.org/v1/countries";
     private final String URL_CITIES = "https://api.openaq.org/v1/cities?country=";
@@ -249,7 +249,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObjectI = jsonArray.getJSONObject(i);
-                        String parameter, value, d;
+                        String parameter, value;
                         parameter = jsonObjectI.getString("parameter");
                         value = jsonObjectI.getString("value");
 

@@ -15,16 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.deepd.pollutaware.Managers.ConstantManagers;
 import com.example.deepd.pollutaware.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,19 +23,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
@@ -61,7 +45,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_maps, container, false);
-
         return view;
     }
 
@@ -70,7 +53,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         MapsInitializer.initialize(view.getContext());
         this.googleMap = googleMap;
         this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
         this.googleMap.addMarker(new MarkerOptions().position(new LatLng(ConstantManagers.latitude, ConstantManagers.longitude)));
 
         CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(ConstantManagers.latitude, ConstantManagers.longitude))
@@ -90,7 +72,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 Double lat = Double.parseDouble(loc[0]), lon = Double.parseDouble(loc[1]);
                 Log.e("LATLON", "" + lat + " " + lon);
 
-                this.googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_pin);
+                this.googleMap.addMarker(new MarkerOptions().icon(icon).position(new LatLng(lat, lon))
+                        .title("PollutAware")
+                        .snippet("Population: 4.37")).showInfoWindow();
             }
         }
     }

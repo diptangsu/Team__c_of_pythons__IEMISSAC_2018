@@ -14,4 +14,15 @@
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/ic_logo" />
+
+    <com.dragankrstic.autotypetextview.AutoTypeTextView
+        android:id="@+id/autoTypeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:typingSpeed="100" />
 </LinearLayout>

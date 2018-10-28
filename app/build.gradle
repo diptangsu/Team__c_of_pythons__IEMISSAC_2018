@@ -43,4 +43,6 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     //PagerSlidingTabStrip
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    //AutoTypeTextView
+    implementation 'com.krsticdragan:autotypetextview:1.1'
 }

@@ -31,6 +31,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.dragankrstic.autotypetextview.AutoTypeTextView;
 import com.example.deepd.pollutaware.Managers.ConstantManagers;
 import com.example.deepd.pollutaware.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -58,6 +59,7 @@ public class SplashActivity extends AppCompatActivity {
     private final String TAG = "SplashScreenActivity";
 
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private AutoTypeTextView autoTypeTextView;
 
     private static final String URL_CITY_LOCATIONS = "https://api.openaq.org/v1/cities?country=IN";
     private static final String URL_LOCATIONS_PER_CITY = "https://api.openaq.org/v1/locations?city=";
@@ -71,6 +73,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        autoTypeTextView = findViewById(R.id.autoTypeTextView);
+        autoTypeTextView.setTextAutoTyping(getResources().getString(R.string.app_name));
     }
 
     @Override
@@ -259,7 +263,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         };
-        handler.postDelayed(runnable, 1000);
+        handler.postDelayed(runnable, 1500);
     }
 
     private boolean isOnline() {

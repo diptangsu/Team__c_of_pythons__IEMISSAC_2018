@@ -1,6 +1,6 @@
 # Team__c_of_pythons__IEMISSAC_2018
 Repository for the IEM International Smart Space App Challenge - 2018  
-Download [PollutAware](https://github.com/diptangsu/Team__c_of_pythons__IEMISSAC_2018/tree/master/FinalSubmission)
+Download [PollutAware](https://github.com/diptangsu/Team__c_of_pythons__IEMISSAC_2018/raw/master/FinalSubmission/PollutAware.apk)
 
 ## Problem Statement 4
 With increasing level of air pollutions each day, people are becoming more prone to respiratory diseases. Create an application to visualize users the level of different air pollutants in their current location.  

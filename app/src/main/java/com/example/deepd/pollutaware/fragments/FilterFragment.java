@@ -51,7 +51,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FilterFragment extends Fragment {
 
     private View view;
 
@@ -61,7 +61,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private final String URL_MEASUREMENTS = "https://api.openaq.org/v1/measurements?";
     private final String URL_PARAMETERS = "https://api.openaq.org/v1/parameters";
     private final String TAG = "FilterFragment";
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+
     private Spinner countrySpinner;
     private Spinner citySpinner;
     private Spinner areaSpinner;
@@ -441,11 +441,5 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         stringRequest.setRetryPolicy(policy);
         requestQueue.add(stringRequest);
-    }
-
-    @Override
-    public void onRefresh() {
-        populateCountrySpinner(URL_COUNTRIES);
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

@@ -23,6 +23,7 @@ public class ConstantManagers {
     public static final String SHARED_PREF_MOBILE = "mobile";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
+    public static final String MY_PREFERENCES = "locations";
 
     public static String userName = "Guest User";
     public static double latitude = 0.0;

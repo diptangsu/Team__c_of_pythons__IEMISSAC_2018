@@ -65,7 +65,6 @@ public class SplashActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     private static final String URL_LOCATIONS = "https://api.openaq.org/v1/locations";
-    private static final String MY_PREFERENCES = "locations";
 
     private Set<String> locations;
     private Set<String> storedLocations;
@@ -89,11 +88,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void locations() {
-        sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(ConstantManagers.MY_PREFERENCES, Context.MODE_PRIVATE);
         locations = new HashSet<>();
 
 //        fetchAllLocations();
-        storedLocations = sharedPreferences.getStringSet(MY_PREFERENCES, null);
+        storedLocations = sharedPreferences.getStringSet(ConstantManagers.MY_PREFERENCES, null);
         if (storedLocations == null)
             fetchAllLocations();
     }
@@ -123,7 +122,7 @@ public class SplashActivity extends AppCompatActivity {
                     }
 
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putStringSet(MY_PREFERENCES, locations);
+                    editor.putStringSet(ConstantManagers.MY_PREFERENCES, locations);
                     editor.apply();
                 } catch (JSONException e) {
                     e.printStackTrace();

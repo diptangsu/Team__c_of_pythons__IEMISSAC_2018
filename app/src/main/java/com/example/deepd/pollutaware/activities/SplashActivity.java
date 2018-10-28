@@ -89,7 +89,7 @@ public class SplashActivity extends AppCompatActivity {
 
 //        fetchAllLocations();
         storedLocations = sharedPreferences.getStringSet(ConstantManagers.MY_PREFERENCES, null);
-//        if (storedLocations == null)
+        if (storedLocations == null)
             fetchAllLocations();
     }
 

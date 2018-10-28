@@ -70,7 +70,7 @@ public class FilterFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private String citySelected, countrySelected, areaSelected;
     private final String TAG = "FilterFragment";
 
-    LineChart lineChart;
+    private LineChart lineChart;
 
     private List<String> countryNames;
     private List<String> cityNames;

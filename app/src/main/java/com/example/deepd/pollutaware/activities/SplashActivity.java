@@ -21,6 +21,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -37,6 +38,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,16 +86,16 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             requestLocationPermission();
         }
+    }
 
+    private void locations() {
         sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         locations = new HashSet<>();
 
 //        fetchAllLocations();
         storedLocations = sharedPreferences.getStringSet(MY_PREFERENCES, null);
-        if(storedLocations == null)
+        if (storedLocations == null)
             fetchAllLocations();
-        else
-            Toast.makeText(this, "" + storedLocations.size(), Toast.LENGTH_SHORT).show();
     }
 
     private void fetchAllLocations() {
@@ -107,7 +109,7 @@ public class SplashActivity extends AppCompatActivity {
 
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject jsonObjectI = results.getJSONObject(i);
-                        if(jsonObjectI.has("coordinates")) {
+                        if (jsonObjectI.has("coordinates")) {
                             JSONObject coordinates = jsonObjectI.getJSONObject("coordinates");
                             String lat, lon;
                             if (coordinates.has("latitude") && coordinates.has("longitude")) {
@@ -212,18 +214,13 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (isOnline()) {
-//                    if (hasProfile()) {
+                    locations();
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
-//                    } else {
-//                        Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
-//                        startActivity(intent);
-//                        finish();
-//                    }
                 } else {
-                    //do
-                    Toast.makeText(SplashActivity.this, "is not online", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SplashActivity.this, "Turn on Internet", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         };

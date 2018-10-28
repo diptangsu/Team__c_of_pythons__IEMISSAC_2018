@@ -21,7 +21,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -38,14 +37,12 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
@@ -53,8 +50,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import static java.security.AccessController.getContext;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -64,7 +59,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    private static final String URL_LOCATIONS = "https://api.openaq.org/v1/locations?country=IN";
+    private static final String URL_CITY_LOCATIONS = "https://api.openaq.org/v1/cities?country=IN";
+    private static final String URL_LOCATIONS_PER_CITY = "https://api.openaq.org/v1/locations?city=";
 
     private Set<String> locations;
     private Set<String> storedLocations;
@@ -93,13 +89,49 @@ public class SplashActivity extends AppCompatActivity {
 
 //        fetchAllLocations();
         storedLocations = sharedPreferences.getStringSet(ConstantManagers.MY_PREFERENCES, null);
-        if (storedLocations == null)
+//        if (storedLocations == null)
             fetchAllLocations();
     }
 
     private void fetchAllLocations() {
         RequestQueue requestQueue = Volley.newRequestQueue(SplashActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_LOCATIONS, new Response.Listener<String>() {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_CITY_LOCATIONS, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray results = jsonObject.getJSONArray("results");
+
+                    for(int i = 0; i < results.length(); i++) {
+                        String city = results.getJSONObject(i).getString("city");
+//                        Log.e("CITY", city);
+                        fetchAllLocationsPerCity(city);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(SplashActivity.this, "Could not get Parameters", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(SplashActivity.this, "error listener", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+
+        int socketTimeout = 30000;
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(policy);
+        requestQueue.add(stringRequest);
+    }
+
+    private void fetchAllLocationsPerCity(String city) {
+        RequestQueue requestQueue = Volley.newRequestQueue(SplashActivity.this);
+        String url = URLify(URL_LOCATIONS_PER_CITY + city);
+//        Log.e("URL: ", url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -185,6 +217,10 @@ public class SplashActivity extends AppCompatActivity {
 //        String username = sharedPreferences.getString(ConstantManagers.SHARED_PREF_USERNAME, null);
 //        return username != null;
 //    }
+
+    private String URLify(String url) {
+        return url.replace(" ", "%20");
+    }
 
     @SuppressLint("MissingPermission")
     private void getLocation() {

@@ -8,11 +8,23 @@
 
 package com.example.deepd.pollutaware.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.deepd.pollutaware.Managers.ConstantManagers;
 import com.example.deepd.pollutaware.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,6 +36,17 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,6 +55,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private View view;
     private GoogleMap googleMap;
     private MapView mapView;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -52,6 +76,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(ConstantManagers.latitude, ConstantManagers.longitude))
                 .zoom(10f).bearing(0).tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        plotPoints();
+    }
+
+    private void plotPoints() {
+        sharedPreferences = getContext().getSharedPreferences(ConstantManagers.MY_PREFERENCES, Context.MODE_PRIVATE);
+        Set<String> storedLocations = sharedPreferences.getStringSet(ConstantManagers.MY_PREFERENCES, null);
+
+        if (storedLocations != null) {
+            for(String location : storedLocations) {
+                String loc[] = location.split(",");
+                Double lat = Double.parseDouble(loc[0]), lon = Double.parseDouble(loc[1]);
+                Log.e("LATLON", "" + lat + " " + lon);
+
+                this.googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+            }
+        }
     }
 
     @Override
@@ -64,6 +105,5 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             mapView.getMapAsync(this);
         }
     }
-
 
 }

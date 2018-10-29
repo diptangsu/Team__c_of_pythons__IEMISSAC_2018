@@ -51,6 +51,8 @@ It Includes:
 The Graph can be zoomed to view individual values of the data points  
 <img src="https://github.com/diptangsu/Team__c_of_pythons__IEMISSAC_2018/blob/master/Screenshots/Zoomable%20and%20Interactive%20Graph%20Plots.png" width="200">  
 <img src="https://github.com/diptangsu/Team__c_of_pythons__IEMISSAC_2018/blob/master/Screenshots/Team.png" width="200">
+<img src="https://github.com/diptangsu/Team__c_of_pythons__IEMISSAC_2018/blob/master/Screenshots/graph.gif" width="200">
+
 
 ## Team c_of_pythons
 1. [Diptangsu Goswami](https://github.com/diptangsu)

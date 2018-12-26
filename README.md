@@ -1,4 +1,5 @@
 # Team__c_of_pythons__IEMISSAC_2018
+**Our team won the 2nd prize.**  
 Repository for the IEM International Smart Space App Challenge - 2018  
 Download [PollutAware](https://github.com/diptangsu/Team__c_of_pythons__IEMISSAC_2018/raw/master/FinalSubmission/PollutAware.apk)  
 The apk file is in the FinalSubmission folder of this repository.  
@@ -59,3 +60,5 @@ The Graph can be zoomed to view individual values of the data points
 2. [Tanumoy Nandi](https://github.com/tmoynandy)
 3. [Sujoy Dutta](https://github.com/Sujoydatta26)
 4. [Koustav Chanda](https://github.com/KoustavCode)
+
+App Logo designed by [Srijita Das](https://www.instagram.com/srig.ta/)
